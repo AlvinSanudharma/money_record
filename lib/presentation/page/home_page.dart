@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -68,7 +69,67 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Expanded(child: ListView()),
+          Expanded(
+              child: ListView(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 30),
+            children: [
+              Text(
+                'Pengeluaran Hari Ini',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              DView.spaceHeight(),
+              Material(
+                borderRadius: BorderRadius.circular(16),
+                elevation: 4,
+                color: AppColor.primary,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
+                      child: Text(
+                        'Rp 500.000,00',
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.secondary),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
+                      child: Text(
+                        '+20% dibanding kemarin',
+                        style: TextStyle(color: AppColor.bg, fontSize: 16),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(16, 0, 0, 16),
+                      padding: EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomLeft: Radius.circular(8),
+                          )),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Selengkapnya',
+                            style: TextStyle(
+                                color: AppColor.primary, fontSize: 16),
+                          ),
+                          Icon(Icons.navigate_next),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          )),
         ],
       ),
     );
