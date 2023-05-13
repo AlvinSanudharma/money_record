@@ -25,8 +25,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   register() async {
     if (formKey.currentState!.validate()) {
-      await SourceUser.register(context, controllerName.text,
-          controllerEmail.text, controllerPassword.text);
+      await SourceUser.register(
+          controllerName.text, controllerEmail.text, controllerPassword.text);
     }
   }
 

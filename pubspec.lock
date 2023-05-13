@@ -41,6 +41,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
+  community_charts_common:
+    dependency: transitive
+    description:
+      name: community_charts_common
+      sha256: bcda2831d8c3225036102dff007e2a901a2fdfcbba604e10c78db3fe5d9362a5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  community_charts_flutter:
+    dependency: transitive
+    description:
+      name: community_charts_flutter
+      sha256: "2294cba46b67659109b665f2d9ffeffef93bb1540a5e7a7bcf2630b809a9363e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -49,14 +65,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  d_chart:
+    dependency: "direct main"
+    description:
+      name: d_chart
+      sha256: da1e1155dcd5082690890a276da38b36f74bdd834082a0aa7f3159532d691e0c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.11"
   d_info:
     dependency: "direct main"
     description:
       name: d_info
-      sha256: c2a814a56c370db53c09368e902c5639bc5c6c1d76eb95c47ada02ea557ef699
+      sha256: "03d8b80cc4b2032878ae2ea6b7ae5ccf11c0339588e06cb3badbef64408b754c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.0.9"
   d_method:
     dependency: "direct main"
     description:

@@ -24,7 +24,7 @@ class SourceUser {
   }
 
   static Future<bool> register(
-      context, String name, String email, String password) async {
+      String name, String email, String password) async {
     String url = '${Api.user}/register.php';
 
     Map? responseBody = await AppRequest.posts(url, {
@@ -38,15 +38,15 @@ class SourceUser {
     if (responseBody == null) return false;
 
     if (responseBody['success']) {
-      DInfo.dialogSuccess(context, 'Berhasil Register');
-      DInfo.closeDialog(context);
+      DInfo.dialogSuccess('Berhasil Register');
+      DInfo.closeDialog();
     } else {
       if (responseBody['message'] == 'email') {
-        DInfo.dialogError(context, 'Email sudah terdaftar');
+        DInfo.dialogError('Email sudah terdaftar');
       } else {
-        DInfo.dialogError(context, 'Gagal Register');
+        DInfo.dialogError('Gagal Register');
       }
-      DInfo.closeDialog(context);
+      DInfo.closeDialog();
     }
 
     return responseBody['success'];
