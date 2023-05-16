@@ -1,8 +1,6 @@
 import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';

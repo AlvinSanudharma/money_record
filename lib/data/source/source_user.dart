@@ -1,5 +1,4 @@
 import 'package:d_info/d_info.dart';
-import 'package:d_method/d_method.dart';
 import 'package:money_record/config/api.dart';
 import 'package:money_record/config/app_request.dart';
 import 'package:money_record/config/session.dart';
