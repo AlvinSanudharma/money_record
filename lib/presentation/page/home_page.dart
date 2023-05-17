@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';
+import 'package:money_record/config/app_format.dart';
 import 'package:money_record/config/session.dart';
+import 'package:money_record/presentation/controller/c_home.dart';
 import 'package:money_record/presentation/controller/c_user.dart';
 import 'package:money_record/presentation/page/auth/login_page.dart';
 
@@ -17,11 +19,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final cUser = Get.put(CUser());
+  final cHome = Get.put(CHome());
 
   @override
   void initState() {
+    cHome.getAnalysis(cUser.data.idUser!);
+
     super.initState();
-    print('Init State Run!');
   }
 
   @override
@@ -308,27 +312,26 @@ class _HomePageState extends State<HomePage> {
   AspectRatio weekly() {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: DChartBar(
-        data: const [
-          {
-            'id': 'Bar',
-            'data': [
-              {'domain': '2020', 'measure': 3},
-              {'domain': '2021', 'measure': 4},
-              {'domain': '2022', 'measure': 6},
-              {'domain': '2023', 'measure': 0.3},
-            ],
-          },
-        ],
-        domainLabelPaddingToAxisLine: 16,
-        axisLineTick: 2,
-        axisLinePointTick: 2,
-        axisLinePointWidth: 10,
-        axisLineColor: Colors.green,
-        measureLabelPaddingToAxisLine: 16,
-        barColor: (barData, index, id) => Colors.green,
-        showBarValue: true,
-      ),
+      child: Obx(() {
+        return DChartBar(
+          data: [
+            {
+              'id': 'Bar',
+              'data': List.generate(7, (index) {
+                return {
+                  'domain': cHome.weekText()[index],
+                  'measure': cHome.week[index]
+                };
+              })
+            },
+          ],
+          domainLabelPaddingToAxisLine: 8,
+          axisLineColor: AppColor.primary,
+          measureLabelPaddingToAxisLine: 16,
+          barColor: (barData, index, id) => AppColor.primary,
+          showBarValue: true,
+        );
+      }),
     );
   }
 
@@ -342,18 +345,22 @@ class _HomePageState extends State<HomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
-            child: Text(
-              'Rp 500.000,00',
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.bold, color: AppColor.secondary),
-            ),
+            child: Obx(() {
+              return Text(
+                AppFormat.currency(cHome.today.toString()),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.bold, color: AppColor.secondary),
+              );
+            }),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
-            child: Text(
-              '+20% dibanding kemarin',
-              style: TextStyle(color: AppColor.bg, fontSize: 16),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
+            child: Obx(() {
+              return Text(
+                cHome.todayPercent,
+                style: const TextStyle(color: AppColor.bg, fontSize: 16),
+              );
+            }),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
