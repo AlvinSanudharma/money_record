@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     cHome.getAnalysis(cUser.data.idUser!);
-
     super.initState();
   }
 
@@ -217,7 +216,7 @@ class _HomePageState extends State<HomePage> {
               weekly(),
               DView.spaceHeight(30),
               Text(
-                'Berbandingan Bulan Ini',
+                'Perbandingan Bulan Ini',
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
@@ -239,21 +238,36 @@ class _HomePageState extends State<HomePage> {
           width: MediaQuery.of(context).size.width * 0.5,
           height: MediaQuery.of(context).size.width * 0.5,
           child: Stack(children: [
-            DChartPie(
-              data: const [
-                {'domain': 'Flutter', 'measure': 28},
-                {'domain': 'React Native', 'measure': 27},
-              ],
-              fillColor: (pieData, index) => Colors.purple,
-              donutWidth: 30,
-              labelColor: Colors.white,
-            ),
-            Center(
-                child: Text('60%',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium!
-                        .copyWith(color: AppColor.primary)))
+            Obx(() {
+              return DChartPie(
+                data: [
+                  {'domain': 'income', 'measure': cHome.monthIncome},
+                  {'domain': 'outcome', 'measure': cHome.monthOutcome},
+                  if (cHome.monthIncome == 0 && cHome.monthOutcome == 0)
+                    {'domain': 'nol', 'measure': 1}
+                ],
+                fillColor: (pieData, index) {
+                  switch (pieData['domain']) {
+                    case 'income':
+                      return AppColor.primary;
+                    case 'outcome':
+                      return AppColor.chart;
+                    default:
+                      return AppColor.bg.withOpacity(0.5);
+                  }
+                },
+                donutWidth: 30,
+                labelColor: Colors.transparent,
+                showLabelLine: false,
+              );
+            }),
+            Center(child: Obx(() {
+              return Text('${cHome.percentIncome}%',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium!
+                      .copyWith(color: AppColor.primary));
+            }))
           ]),
         ),
         Column(
@@ -291,18 +305,22 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             DView.spaceHeight(20),
-            Text('Pemasukan'),
-            Text('lebih besar 20%'),
-            Text('dari pengeluaran'),
+            Obx(() {
+              return Text(
+                cHome.monthPercent,
+              );
+            }),
             DView.spaceHeight(10),
             Text('Atau setara:'),
-            Text(
-              'Rp 20.000,00',
-              style: TextStyle(
-                  color: AppColor.primary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
+            Obx(() {
+              return Text(
+                AppFormat.currency(cHome.differentMonth.toString()),
+                style: TextStyle(
+                    color: AppColor.primary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              );
+            }),
           ],
         )
       ],
