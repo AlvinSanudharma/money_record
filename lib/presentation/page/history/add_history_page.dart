@@ -115,13 +115,13 @@ class AddHistoryPage extends StatelessWidget {
                 border: Border.all(color: Colors.grey)),
             child: GetBuilder<CAddHistory>(builder: (_) {
               return Wrap(
-                runSpacing: 8,
+                runSpacing: 0,
                 spacing: 8,
                 children: List.generate(_.items.length, (index) {
                   return Chip(
                     label: Text(_.items[index]['name']),
                     deleteIcon: const Icon(Icons.clear),
-                    onDeleted: () {},
+                    onDeleted: () => _.deleteItem(index),
                   );
                 }),
               );
@@ -135,11 +135,13 @@ class AddHistoryPage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               DView.spaceWidth(8),
-              Text(
-                AppFormat.currency('300000'),
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.bold, color: AppColor.primary),
-              )
+              Obx(() {
+                return Text(
+                  AppFormat.currency(cAddHistory.total.toString()),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.bold, color: AppColor.primary),
+                );
+              })
             ],
           ),
           DView.spaceHeight(30),

@@ -16,23 +16,24 @@ class CAddHistory extends GetxController {
   addItem(n) {
     _items.value.add(n);
 
-    update();
+    count();
   }
 
   deleteItem(i) {
-    _items.value.remove(i);
+    _items.value.removeAt(i);
 
-    update();
+    count();
   }
 
   final _total = 0.0.obs;
   double get total => _total.value;
-  setTotal(n) => _total.value = n;
 
   count() {
-    items
-        .map((e) => e['price'])
-        .toList()
-        .fold<double>(0.0, (previousValue, element) => previousValue + element);
+    _total.value = items.map((e) => e['price']).toList().fold<double>(
+        0.0,
+        (previousValue, element) =>
+            double.parse(previousValue.toString()) + double.parse(element));
+
+    update();
   }
 }
