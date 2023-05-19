@@ -2,6 +2,7 @@ import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
 import 'package:money_record/presentation/controller/history/c_add_history.dart';
@@ -24,10 +25,23 @@ class AddHistoryPage extends StatelessWidget {
           const Text('Tanggal'),
           Row(
             children: [
-              const Text('2022-01-01'),
+              Obx(() {
+                return Text(cAddHistory.date);
+              }),
               DView.spaceWidth(),
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  DateTime? result = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2023, 01, 01),
+                      lastDate: DateTime(DateTime.now().year + 1));
+
+                  if (result != null) {
+                    cAddHistory
+                        .setDate(DateFormat('yyyy-MM-dd').format(result));
+                  }
+                },
                 icon: const Icon(Icons.event),
                 label: const Text('Pilih'),
               )
@@ -39,15 +53,19 @@ class AddHistoryPage extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           DView.spaceHeight(4),
-          DropdownButtonFormField(
-            value: 'Pemasukan',
-            items: ['Pemasukan', 'Pengeluaran'].map((e) {
-              return DropdownMenuItem(value: e, child: Text(e));
-            }).toList(),
-            onChanged: (value) {},
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), isDense: true),
-          ),
+          Obx(() {
+            return DropdownButtonFormField(
+              value: cAddHistory.type,
+              items: ['Pemasukan', 'Pengeluaran'].map((e) {
+                return DropdownMenuItem(value: e, child: Text(e));
+              }).toList(),
+              onChanged: (value) {
+                cAddHistory.setType(value);
+              },
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), isDense: true),
+            );
+          }),
           DView.spaceHeight(),
           DInput(
             controller: controllerName,
@@ -63,7 +81,16 @@ class AddHistoryPage extends StatelessWidget {
           ),
           DView.spaceHeight(),
           ElevatedButton(
-              onPressed: () {}, child: const Text('Tambah Ke Items')),
+              onPressed: () {
+                cAddHistory.addItem({
+                  'name': controllerName.text,
+                  'price': controllerPrice.text
+                });
+
+                controllerName.clear();
+                controllerPrice.clear();
+              },
+              child: const Text('Tambah Ke Items')),
           DView.spaceHeight(),
           Center(
             child: Container(
@@ -86,15 +113,19 @@ class AddHistoryPage extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey)),
-            child: Wrap(
-              children: [
-                Chip(
-                  label: const Text('Sumber'),
-                  deleteIcon: const Icon(Icons.clear),
-                  onDeleted: () {},
-                )
-              ],
-            ),
+            child: GetBuilder<CAddHistory>(builder: (_) {
+              return Wrap(
+                runSpacing: 8,
+                spacing: 8,
+                children: List.generate(_.items.length, (index) {
+                  return Chip(
+                    label: Text(_.items[index]['name']),
+                    deleteIcon: const Icon(Icons.clear),
+                    onDeleted: () {},
+                  );
+                }),
+              );
+            }),
           ),
           DView.spaceHeight(),
           Row(
