@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
@@ -5,18 +7,42 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/config/app_format.dart';
+import 'package:money_record/data/source/source_history.dart';
+import 'package:money_record/presentation/controller/c_user.dart';
 import 'package:money_record/presentation/controller/history/c_add_history.dart';
 
 class AddHistoryPage extends StatelessWidget {
-  const AddHistoryPage({super.key});
+  AddHistoryPage({super.key});
+
+  final cAddHistory = Get.put(CAddHistory());
+  final cUser = Get.put(CUser());
+
+  final controllerName = TextEditingController();
+  final controllerPrice = TextEditingController();
+
+  addHistory() {
+    cAddHistory.setLoading(true);
+
+    Future.delayed(const Duration(milliseconds: 2000), () async {
+      bool success = await SourceHistory.add(
+          cUser.data.idUser!,
+          cAddHistory.date,
+          cAddHistory.type,
+          jsonEncode(cAddHistory.items),
+          cAddHistory.total.toString());
+
+      if (success) {
+        Future.delayed(const Duration(milliseconds: 3000), () {
+          Get.back(result: true);
+        });
+      }
+
+      cAddHistory.setLoading(false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cAddHistory = Get.put(CAddHistory());
-
-    final controllerName = TextEditingController();
-    final controllerPrice = TextEditingController();
-
     return Scaffold(
       appBar: DView.appBarLeft('Tambah Baru'),
       body: ListView(
@@ -82,13 +108,29 @@ class AddHistoryPage extends StatelessWidget {
           DView.spaceHeight(),
           ElevatedButton(
               onPressed: () {
-                cAddHistory.addItem({
-                  'name': controllerName.text,
-                  'price': controllerPrice.text
-                });
+                if (controllerName.text.isEmpty ||
+                    controllerPrice.text.isEmpty) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Gagal'),
+                            content: const Text('Silahkan lengkapi data'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ));
+                } else {
+                  cAddHistory.addItem({
+                    'name': controllerName.text,
+                    'price': controllerPrice.text
+                  });
 
-                controllerName.clear();
-                controllerPrice.clear();
+                  controllerName.clear();
+                  controllerPrice.clear();
+                }
               },
               child: const Text('Tambah Ke Items')),
           DView.spaceHeight(),
@@ -145,25 +187,61 @@ class AddHistoryPage extends StatelessWidget {
             ],
           ),
           DView.spaceHeight(30),
-          Material(
-            color: AppColor.primary,
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              onTap: () {},
+          Obx(() {
+            return Material(
+              color: AppColor.primary,
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                ),
-                child: Center(
-                  child: Text('SUBMIT',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.white,
-                          )),
+              child: InkWell(
+                onTap: () {
+                  if (cAddHistory.items.isEmpty) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Gagal'),
+                              content: const Text('Silahkan lengkapi data'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  } else {
+                    addHistory();
+                  }
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                  ),
+                  child:
+                      // NOTE: Check if loading state is true show the spinner else show the SUBMIT text
+                      cAddHistory.isLoading
+                          ? const Center(
+                              child: SizedBox(
+                                width: 23.0,
+                                height: 23.0,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Center(
+                              child: Text('SUBMIT',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        color: Colors.white,
+                                      )),
+                            ),
                 ),
               ),
-            ),
-          )
+            );
+          })
         ],
       ),
     );

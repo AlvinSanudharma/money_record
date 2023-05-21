@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     cHome.getAnalysis(cUser.data.idUser!);
+
     super.initState();
   }
 
@@ -133,8 +134,8 @@ class _HomePageState extends State<HomePage> {
       child: ListView(
         children: [
           DrawerHeader(
-              padding: EdgeInsets.fromLTRB(20, 16, 16, 20),
-              margin: EdgeInsets.only(bottom: 0),
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 20),
+              margin: const EdgeInsets.only(bottom: 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,42 +198,42 @@ class _HomePageState extends State<HomePage> {
                 }
               });
             },
-            leading: Icon(Icons.add),
+            leading: const Icon(Icons.add),
             horizontalTitleGap: 0,
-            title: Text('Tambah Baru'),
-            trailing: Icon(Icons.navigate_next),
+            title: const Text('Tambah Baru'),
+            trailing: const Icon(Icons.navigate_next),
           ),
-          Divider(
+          const Divider(
             height: 1,
           ),
           ListTile(
             onTap: () {},
-            leading: Icon(Icons.south_west),
+            leading: const Icon(Icons.south_west),
             horizontalTitleGap: 0,
-            title: Text('Pemasukan'),
-            trailing: Icon(Icons.navigate_next),
+            title: const Text('Pemasukan'),
+            trailing: const Icon(Icons.navigate_next),
           ),
-          Divider(
+          const Divider(
             height: 1,
           ),
           ListTile(
             onTap: () {},
-            leading: Icon(Icons.north_east),
+            leading: const Icon(Icons.north_east),
             horizontalTitleGap: 0,
-            title: Text('Pengeluaran'),
-            trailing: Icon(Icons.navigate_next),
+            title: const Text('Pengeluaran'),
+            trailing: const Icon(Icons.navigate_next),
           ),
-          Divider(
+          const Divider(
             height: 1,
           ),
           ListTile(
             onTap: () {},
-            leading: Icon(Icons.history),
+            leading: const Icon(Icons.history),
             horizontalTitleGap: 0,
-            title: Text('Riwayat'),
-            trailing: Icon(Icons.navigate_next),
+            title: const Text('Riwayat'),
+            trailing: const Icon(Icons.navigate_next),
           ),
-          Divider(
+          const Divider(
             height: 1,
           ),
         ],
@@ -272,6 +273,7 @@ class _HomePageState extends State<HomePage> {
             }),
             Center(child: Obx(() {
               return Text('${cHome.percentIncome}%',
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium!
@@ -320,11 +322,11 @@ class _HomePageState extends State<HomePage> {
               );
             }),
             DView.spaceHeight(10),
-            Text('Atau setara:'),
+            const Text('Atau setara:'),
             Obx(() {
               return Text(
                 AppFormat.currency(cHome.differentMonth.toString()),
-                style: TextStyle(
+                style: const TextStyle(
                     color: AppColor.primary,
                     fontSize: 18,
                     fontWeight: FontWeight.bold),

@@ -13,6 +13,11 @@ class CAddHistory extends GetxController {
   final _items = [].obs;
   List get items => _items.value;
 
+  // NOTE: State for loading button
+  final _isLoading = false.obs;
+  bool get isLoading => _isLoading.value;
+  setLoading(n) => _isLoading.value = n;
+
   addItem(n) {
     _items.value.add(n);
 
