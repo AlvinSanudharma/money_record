@@ -20,25 +20,25 @@ class AddHistoryPage extends StatelessWidget {
   final controllerName = TextEditingController();
   final controllerPrice = TextEditingController();
 
-  addHistory() {
+  addHistory() async {
     cAddHistory.setLoading(true);
 
-    Future.delayed(const Duration(milliseconds: 2000), () async {
-      bool success = await SourceHistory.add(
-          cUser.data.idUser!,
-          cAddHistory.date,
-          cAddHistory.type,
-          jsonEncode(cAddHistory.items),
-          cAddHistory.total.toString());
+    await Future.delayed(const Duration(milliseconds: 2000));
 
-      if (success) {
-        Future.delayed(const Duration(milliseconds: 3000), () {
-          Get.back(result: true);
-        });
-      }
+    bool success = await SourceHistory.add(
+        cUser.data.idUser!,
+        cAddHistory.date,
+        cAddHistory.type,
+        jsonEncode(cAddHistory.items),
+        cAddHistory.total.toString());
 
-      cAddHistory.setLoading(false);
-    });
+    if (success) {
+      Future.delayed(const Duration(milliseconds: 3000), () {
+        Get.back(result: true);
+      });
+    }
+
+    cAddHistory.setLoading(false);
   }
 
   @override
@@ -97,6 +97,7 @@ class AddHistoryPage extends StatelessWidget {
             controller: controllerName,
             hint: 'Jualan',
             title: 'Sumber/Objek Pengeluaran',
+            isRequired: true,
           ),
           DView.spaceHeight(),
           DInput(
@@ -104,6 +105,7 @@ class AddHistoryPage extends StatelessWidget {
             hint: '30000',
             title: 'Harga',
             inputType: TextInputType.number,
+            isRequired: true,
           ),
           DView.spaceHeight(),
           ElevatedButton(
