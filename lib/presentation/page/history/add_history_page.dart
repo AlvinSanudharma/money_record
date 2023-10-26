@@ -196,18 +196,7 @@ class AddHistoryPage extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   if (cAddHistory.items.isEmpty) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Gagal'),
-                              content: const Text('Silahkan lengkapi data'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'OK'),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ));
+                    Get.snackbar('Gagal!', 'Silahkan Lengkapi Data');
                   } else {
                     addHistory();
                   }

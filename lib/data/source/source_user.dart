@@ -17,6 +17,13 @@ class SourceUser {
       var mapUser = responseBody['data'];
 
       Session.saveUser(User.fromJson(mapUser));
+    } else {
+      if (responseBody['message'] == 'Password salah') {
+        DInfo.dialogError('Password yang anda masukan salah');
+      } else {
+        DInfo.dialogError('Gagal Login');
+      }
+      DInfo.closeDialog();
     }
 
     return responseBody['success'];

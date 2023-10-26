@@ -30,9 +30,6 @@ class _LoginPageState extends State<LoginPage> {
         DInfo.closeDialog(actionAfterClose: () {
           Get.off(() => const HomePage());
         });
-      } else {
-        DInfo.dialogError('Gagal Login');
-        DInfo.closeDialog();
       }
     }
   }

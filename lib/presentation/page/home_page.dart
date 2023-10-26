@@ -10,6 +10,7 @@ import 'package:money_record/presentation/controller/c_home.dart';
 import 'package:money_record/presentation/controller/c_user.dart';
 import 'package:money_record/presentation/page/auth/login_page.dart';
 import 'package:money_record/presentation/page/history/add_history_page.dart';
+import 'package:money_record/presentation/page/history/income_outcome_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -212,7 +213,9 @@ class _HomePageState extends State<HomePage> {
             height: 1,
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Get.to(() => const IncomeOutcomePage(type: 'Pemasukan'));
+            },
             leading: const Icon(Icons.south_west),
             horizontalTitleGap: 0,
             title: const Text('Pemasukan'),
@@ -222,7 +225,9 @@ class _HomePageState extends State<HomePage> {
             height: 1,
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Get.to(() => const IncomeOutcomePage(type: 'Pengeluaran'));
+            },
             leading: const Icon(Icons.north_east),
             horizontalTitleGap: 0,
             title: const Text('Pengeluaran'),
@@ -405,9 +410,9 @@ class _HomePageState extends State<HomePage> {
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),
                 )),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
+              children: [
                 Text(
                   'Selengkapnya',
                   style: TextStyle(color: AppColor.primary, fontSize: 16),
