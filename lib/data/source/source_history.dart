@@ -2,6 +2,7 @@ import 'package:d_info/d_info.dart';
 import 'package:intl/intl.dart';
 import 'package:money_record/config/api.dart';
 import 'package:money_record/config/app_request.dart';
+import 'package:money_record/data/models/history.dart';
 
 class SourceHistory {
   static Future<Map> analysis(String idUser) async {
@@ -65,5 +66,24 @@ class SourceHistory {
     }
 
     return responseBody['success'];
+  }
+
+  static Future<List<History>> incomeOutcome(String idUser, String type) async {
+    String url = '${Api.history}/income_outcome.php';
+
+    Map? responseBody =
+        await AppRequest.posts(url, {'id_user': idUser, 'type': type});
+
+    if (responseBody == null) {
+      return [];
+    }
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+
+      return list.map((e) => History.fromJson(e)).toList();
+    }
+
+    return [];
   }
 }

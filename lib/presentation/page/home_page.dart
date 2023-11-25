@@ -284,6 +284,7 @@ class _HomePageState extends State<HomePage> {
             Center(child: Obx(() {
               return Text('${cHome.percentIncome}%',
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium!

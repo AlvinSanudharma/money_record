@@ -21,9 +21,7 @@ class AddHistoryPage extends StatelessWidget {
   final controllerPrice = TextEditingController();
 
   addHistory() async {
-    cAddHistory.setLoading(true);
-
-    await Future.delayed(const Duration(milliseconds: 2000));
+    cAddHistory.isLoading = true;
 
     bool success = await SourceHistory.add(
         cUser.data.idUser!,
@@ -38,7 +36,7 @@ class AddHistoryPage extends StatelessWidget {
       });
     }
 
-    cAddHistory.setLoading(false);
+    cAddHistory.isLoading = false;
   }
 
   @override
@@ -97,7 +95,6 @@ class AddHistoryPage extends StatelessWidget {
             controller: controllerName,
             hint: 'Jualan',
             title: 'Sumber/Objek Pengeluaran',
-            isRequired: true,
           ),
           DView.spaceHeight(),
           DInput(
@@ -105,25 +102,13 @@ class AddHistoryPage extends StatelessWidget {
             hint: '30000',
             title: 'Harga',
             inputType: TextInputType.number,
-            isRequired: true,
           ),
           DView.spaceHeight(),
           ElevatedButton(
               onPressed: () {
                 if (controllerName.text.isEmpty ||
                     controllerPrice.text.isEmpty) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Gagal'),
-                            content: const Text('Silahkan lengkapi data'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ));
+                  Get.snackbar('Gagal!', 'Silahkan Lengkapi Data');
                 } else {
                   cAddHistory.addItem({
                     'name': controllerName.text,
@@ -189,7 +174,11 @@ class AddHistoryPage extends StatelessWidget {
             ],
           ),
           DView.spaceHeight(30),
-          Obx(() {
+          GetBuilder<CAddHistory>(builder: (_) {
+            if (_.isLoading) {
+              return DView.loadingCircle();
+            }
+
             return Material(
               color: AppColor.primary,
               borderRadius: BorderRadius.circular(8),
@@ -206,29 +195,12 @@ class AddHistoryPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     vertical: 16,
                   ),
-                  child:
-                      // NOTE: Check if loading state is true show the spinner else show the SUBMIT text
-                      cAddHistory.isLoading
-                          ? const Center(
-                              child: SizedBox(
-                                width: 23.0,
-                                height: 23.0,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Center(
-                              child: Text('SUBMIT',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge!
-                                      .copyWith(
-                                        color: Colors.white,
-                                      )),
-                            ),
+                  child: Center(
+                    child: Text('SUBMIT',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: Colors.white,
+                            )),
+                  ),
                 ),
               ),
             );

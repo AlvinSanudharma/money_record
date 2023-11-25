@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:money_record/config/app_asset.dart';
 import 'package:money_record/config/app_color.dart';
 import 'package:money_record/data/source/source_user.dart';
+import 'package:money_record/presentation/controller/auth/c_login.dart';
 import 'package:money_record/presentation/page/auth/register_page.dart';
 import 'package:money_record/presentation/page/home_page.dart';
 
@@ -16,12 +17,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final cLogin = Get.put(CLogin());
+
   final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   login() async {
     if (formKey.currentState!.validate()) {
+      cLogin.isLoading = true;
+
       bool success =
           await SourceUser.login(controllerEmail.text, controllerPassword.text);
 
@@ -31,6 +36,8 @@ class _LoginPageState extends State<LoginPage> {
           Get.off(() => const HomePage());
         });
       }
+
+      cLogin.isLoading = false;
     }
   }
 
@@ -96,23 +103,29 @@ class _LoginPageState extends State<LoginPage> {
                                       horizontal: 20, vertical: 16)),
                             ),
                             DView.spaceHeight(30),
-                            InkWell(
-                              onTap: () => login(),
-                              borderRadius: BorderRadius.circular(30),
-                              child: Material(
-                                color: AppColor.primary,
+                            GetBuilder<CLogin>(builder: (_) {
+                              if (_.isLoading) {
+                                return DView.loadingCircle();
+                              }
+
+                              return InkWell(
+                                onTap: () => login(),
                                 borderRadius: BorderRadius.circular(30),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 40, vertical: 16),
-                                  child: Text(
-                                    'LOGIN',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
+                                child: Material(
+                                  color: AppColor.primary,
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 40, vertical: 16),
+                                    child: Text(
+                                      'LOGIN',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
+                              );
+                            })
                           ],
                         ),
                       ),
