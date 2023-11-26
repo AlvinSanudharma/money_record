@@ -1,7 +1,10 @@
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:money_record/config/app_color.dart';
+import 'package:money_record/config/app_format.dart';
+import 'package:money_record/data/models/history.dart';
 import 'package:money_record/presentation/controller/c_user.dart';
 import 'package:money_record/presentation/controller/history/c_income_outcome.dart';
 
@@ -17,6 +20,8 @@ class IncomeOutcomePage extends StatefulWidget {
 class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
   final cInOut = Get.put(CIncomeOutcome());
   final cUser = Get.put(CUser());
+
+  final controllerSearch = TextEditingController();
 
   refresh() {
     cInOut.getList(cUser.data.idUser, widget.type);
@@ -50,7 +55,10 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                       borderSide: BorderSide.none,
                     ),
                     suffixIcon: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        cInOut.search(cUser.data.idUser, widget.type,
+                            controllerSearch.text);
+                      },
                       icon: const Icon(
                         Icons.search,
                         color: Colors.white,
@@ -61,52 +69,76 @@ class _IncomeOutcomePageState extends State<IncomeOutcomePage> {
                     hintText: '2022-06-01'),
                 style: const TextStyle(color: Colors.white),
                 textAlignVertical: TextAlignVertical.center,
-                onTap: () {},
+                controller: controllerSearch,
+                onTap: () async {
+                  DateTime? result = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2023, 01, 01),
+                      lastDate: DateTime(DateTime.now().year + 1));
+
+                  if (result != null) {
+                    controllerSearch.text =
+                        DateFormat('yyyy-MM-dd').format(result);
+                  }
+                },
               ),
             ))
           ],
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          refresh();
-        },
-        child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Card(
-              elevation: 4,
-              margin: EdgeInsets.fromLTRB(
-                  16, index == 0 ? 16 : 8, 16, index == 9 ? 16 : 8),
-              child: Row(
-                children: [
-                  DView.spaceWidth(),
-                  const Text(
-                    '22 Jun 2022',
-                    style: TextStyle(
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                  const Expanded(
-                      child: Text(
-                    'Rp 200.000,',
-                    style: TextStyle(
-                        color: AppColor.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                    textAlign: TextAlign.end,
-                  )),
-                  PopupMenuButton(
-                    itemBuilder: (context) => [],
-                    onSelected: (value) => {},
-                  )
-                ],
-              ),
-            );
+      body: GetBuilder<CIncomeOutcome>(builder: (_) {
+        if (_.loading) {
+          return DView.loadingCircle();
+        }
+
+        if (_.list.isEmpty) {
+          return DView.empty();
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            refresh();
           },
-        ),
-      ),
+          child: ListView.builder(
+            itemCount: _.list.length,
+            itemBuilder: (context, index) {
+              History history = _.list[index];
+
+              return Card(
+                elevation: 4,
+                margin: EdgeInsets.fromLTRB(
+                    16, index == 0 ? 16 : 8, 16, index == 9 ? 16 : 8),
+                child: Row(
+                  children: [
+                    DView.spaceWidth(),
+                    Text(
+                      AppFormat.date(history.date!),
+                      style: const TextStyle(
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    Expanded(
+                        child: Text(
+                      AppFormat.currency(history.total ?? '0'),
+                      style: const TextStyle(
+                          color: AppColor.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                      textAlign: TextAlign.end,
+                    )),
+                    PopupMenuButton(
+                      itemBuilder: (context) => [],
+                      onSelected: (value) => {},
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      }),
     );
   }
 }

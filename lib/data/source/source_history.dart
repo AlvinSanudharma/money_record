@@ -86,4 +86,24 @@ class SourceHistory {
 
     return [];
   }
+
+  static Future<List<History>> incomeOutcomeSearch(
+      String idUser, String type, String date) async {
+    String url = '${Api.history}/income_outcome_search.php';
+
+    Map? responseBody = await AppRequest.posts(
+        url, {'id_user': idUser, 'type': type, 'date': date});
+
+    if (responseBody == null) {
+      return [];
+    }
+
+    if (responseBody['success']) {
+      List list = responseBody['data'];
+
+      return list.map((e) => History.fromJson(e)).toList();
+    }
+
+    return [];
+  }
 }
